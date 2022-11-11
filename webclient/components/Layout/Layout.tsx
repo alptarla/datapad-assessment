@@ -11,8 +11,8 @@ const LayoutComponent = (props: LayoutProps) => {
     <>
       <Header title={props.title} />
 
-      <div className="container mx-auto p-4">
-        {props.children}
+      <div className="relative">
+        <div className="container mx-auto p-4">{props.children}</div>
       </div>
     </>
   );

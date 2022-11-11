@@ -3,14 +3,24 @@ import Button from "@webclient/components/UI/Button/Button";
 import { PlusIcon } from "@heroicons/react/outline";
 import MetricChart from "@webclient/components/Dashboards/MetricChart";
 import useDashboardFetch from "@core/hooks/data/use-dashboard-fetch";
+import SideMenu from "@webclient/components/SideMenu/SideMenu";
+import { useEffect, useState } from "react";
 
 function DashboardInner(props) {
+  const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
+
   const { workspaceid, dashboardid } = props;
+
+  useEffect(() => {
+    // mockDashboardFetch();
+  }, []);
 
   const { isError, error, isSuccess, status, data } = useDashboardFetch(
     workspaceid as string,
     dashboardid as string
   );
+
+  console.log({ data });
 
   if (isError) {
     return <>error: {JSON.stringify(error)}</>;
@@ -20,7 +30,13 @@ function DashboardInner(props) {
     return <>status: {status}...</>;
   }
 
-  const handleAddNewKPIClick = () => {};
+  const handleAddNewKPIClick = () => {
+    setIsSideMenuOpen((prevState) => !prevState);
+  };
+
+  const handleCloseSideMenu = () => {
+    setIsSideMenuOpen(false);
+  };
 
   return (
     <>
@@ -43,6 +59,12 @@ function DashboardInner(props) {
           return <MetricChart key={metricId} metric={metric} />;
         })}
       </div>
+
+      <SideMenu
+        isOpen={isSideMenuOpen}
+        onCloseSideMenu={handleCloseSideMenu}
+        workspaceid={workspaceid}
+      />
     </>
   );
 }
