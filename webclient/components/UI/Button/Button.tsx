@@ -10,6 +10,7 @@ type ButtonProps = {
   spinnerClassName?: string | undefined;
   loading?: boolean;
   buttonImage?: React.ReactNode;
+  icon?: React.ReactNode;
 };
 
 const Button = ({
@@ -19,7 +20,8 @@ const Button = ({
   className,
   spinnerClassName,
   loading,
-  buttonImage
+  buttonImage,
+  icon,
 }: ButtonProps) => {
   return (
     <button
@@ -49,14 +51,11 @@ const Button = ({
           ></path>
         </svg>
       )}
+      {icon ? icon : null}
       {title}
       {buttonImage && (
-        <span className="ml-2 flex align-center">
-          {buttonImage}
-        </span>
-        
+        <span className="ml-2 flex align-center">{buttonImage}</span>
       )}
-      
     </button>
   );
 };
