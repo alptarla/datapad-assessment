@@ -8,12 +8,14 @@ type SideMenuProps = {
   isOpen?: boolean;
   onCloseSideMenu: VoidFunction;
   workspaceid: string;
+  onKpiAdd: (kpi: any) => void;
 };
 
 const SideMenu: FC<SideMenuProps> = ({
   isOpen = false,
   onCloseSideMenu,
   workspaceid,
+  onKpiAdd,
 }) => {
   const { isError, error, data, isSuccess, doFetch } = useMetricsAllFetch(
     workspaceid,
@@ -40,6 +42,12 @@ const SideMenu: FC<SideMenuProps> = ({
     return <>error: {JSON.stringify(error)}</>;
   }
 
+  const handleAddKpi = (kpi: any) => {
+    return () => {
+      onKpiAdd(kpi);
+    };
+  };
+
   return (
     <aside
       className={`${
@@ -63,7 +71,15 @@ const SideMenu: FC<SideMenuProps> = ({
         <div className="mt-10 flex flex-col gap-10">
           {isSuccess &&
             Object.entries(data).map(([metricId, metric]) => {
-              return <MetricChart key={metricId} metric={metric} />;
+              return (
+                <div
+                  role="button"
+                  key={metricId}
+                  onClick={handleAddKpi(data[metricId])}
+                >
+                  <MetricChart metric={metric} />
+                </div>
+              );
             })}
         </div>
       </div>

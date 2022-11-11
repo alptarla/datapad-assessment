@@ -7,20 +7,22 @@ import SideMenu from "@webclient/components/SideMenu/SideMenu";
 import { useEffect, useState } from "react";
 
 function DashboardInner(props) {
+  const [kpiList, setKpiList] = useState([]);
+
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
 
   const { workspaceid, dashboardid } = props;
-
-  useEffect(() => {
-    // mockDashboardFetch();
-  }, []);
 
   const { isError, error, isSuccess, status, data } = useDashboardFetch(
     workspaceid as string,
     dashboardid as string
   );
 
-  console.log({ data });
+  useEffect(() => {
+    if (data !== undefined) {
+      setKpiList(data.metrics);
+    }
+  }, [data]);
 
   if (isError) {
     return <>error: {JSON.stringify(error)}</>;
@@ -30,11 +32,12 @@ function DashboardInner(props) {
     return <>status: {status}...</>;
   }
 
-  const handleAddNewKPIClick = () => {
-    setIsSideMenuOpen((prevState) => !prevState);
+  const handleSideBarShown = (isOpen: boolean) => {
+    return () => setIsSideMenuOpen(isOpen);
   };
 
-  const handleCloseSideMenu = () => {
+  const handleAddKpiToDashboard = (kpi: any) => {
+    setKpiList((prevState) => [...prevState, kpi]);
     setIsSideMenuOpen(false);
   };
 
@@ -50,20 +53,21 @@ function DashboardInner(props) {
           title="Add New KPI"
           icon={<PlusIcon className="mr-1 h-4 w-4" />}
           className="text-purple-900 bg-white border rounded-md hover:shadow"
-          onClick={handleAddNewKPIClick}
+          onClick={handleSideBarShown(true)}
         />
       </div>
 
       <div className="grid grid-flow-row-dense grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-        {Object.entries(data.metrics).map(([metricId, metric]) => {
+        {Object.entries(kpiList).map(([metricId, metric]) => {
           return <MetricChart key={metricId} metric={metric} />;
         })}
       </div>
 
       <SideMenu
         isOpen={isSideMenuOpen}
-        onCloseSideMenu={handleCloseSideMenu}
+        onCloseSideMenu={handleSideBarShown(false)}
         workspaceid={workspaceid}
+        onKpiAdd={handleAddKpiToDashboard}
       />
     </>
   );
