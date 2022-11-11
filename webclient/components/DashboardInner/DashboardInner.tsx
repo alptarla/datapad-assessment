@@ -1,14 +1,22 @@
 import Title from "@webclient/components/UI/Title/Title";
 import Button from "@webclient/components/UI/Button/Button";
-import { PlusIcon } from "@heroicons/react/outline";
+import { PlusIcon, ChevronDoubleRightIcon } from "@heroicons/react/outline";
 import MetricChart from "@webclient/components/Dashboards/MetricChart";
 import useDashboardFetch from "@core/hooks/data/use-dashboard-fetch";
 import SideMenu from "@webclient/components/SideMenu/SideMenu";
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+import "react-grid-layout/css/styles.css";
+import "react-resizable/css/styles.css";
+import { Responsive, WidthProvider } from "react-grid-layout";
+
+const ResponsiveGridLayout = WidthProvider(Responsive);
+
+const BREAKPOINTS = { lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 };
+const COLS = { lg: 3, md: 3, sm: 2, xs: 1, xxs: 1 };
 
 function DashboardInner(props) {
   const [kpiList, setKpiList] = useState([]);
-
+  const [currentBreakpoint, setCurrentBreakpoint] = useState("lg");
   const [isSideMenuOpen, setIsSideMenuOpen] = useState(false);
 
   const { workspaceid, dashboardid } = props;
@@ -20,17 +28,25 @@ function DashboardInner(props) {
 
   useEffect(() => {
     if (data !== undefined) {
-      setKpiList(data.metrics);
+      setKpiList([...data.metrics, ...data.metrics]);
     }
   }, [data]);
 
-  if (isError) {
-    return <>error: {JSON.stringify(error)}</>;
-  }
+  const layouts = useMemo(() => {
+    return {
+      lg: kpiList.map((_, index) => ({
+        x: index % COLS[currentBreakpoint],
+        i: index.toString(),
+        y: 0,
+        w: 1,
+        h: 1,
+      })),
+    };
+  }, [kpiList, currentBreakpoint]);
 
-  if (!isSuccess || data === undefined) {
-    return <>status: {status}...</>;
-  }
+  const handleBreakpointChange = (breakpoint) => {
+    setCurrentBreakpoint(breakpoint);
+  };
 
   const handleSideBarShown = (isOpen: boolean) => {
     return () => setIsSideMenuOpen(isOpen);
@@ -40,6 +56,14 @@ function DashboardInner(props) {
     setKpiList((prevState) => [...prevState, kpi]);
     setIsSideMenuOpen(false);
   };
+
+  if (isError) {
+    return <>error: {JSON.stringify(error)}</>;
+  }
+
+  if (!isSuccess || data === undefined) {
+    return <>status: {status}...</>;
+  }
 
   return (
     <>
@@ -57,11 +81,27 @@ function DashboardInner(props) {
         />
       </div>
 
-      <div className="grid grid-flow-row-dense grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
-        {Object.entries(kpiList).map(([metricId, metric]) => {
-          return <MetricChart key={metricId} metric={metric} />;
+      <ResponsiveGridLayout
+        layouts={layouts}
+        breakpoints={BREAKPOINTS}
+        cols={COLS}
+        rowHeight={400}
+        onBreakpointChange={handleBreakpointChange}
+        draggableHandle=".drag-handle"
+        resizeHandle={
+          <div className="react-resizable-handle-icon">
+            <ChevronDoubleRightIcon />
+          </div>
+        }
+      >
+        {Object.entries(kpiList).map(([metricId, metric], index) => {
+          return (
+            <div key={index} className="overflow-hidden">
+              <MetricChart draggableClassName="drag-handle" metric={metric} />
+            </div>
+          );
         })}
-      </div>
+      </ResponsiveGridLayout>
 
       <SideMenu
         isOpen={isSideMenuOpen}

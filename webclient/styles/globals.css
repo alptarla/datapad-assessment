@@ -7,3 +7,26 @@
     @apply text-white bg-vegan-green-600 hover:bg-vegan-green-500 rounded-md shadow font-semibold;
   }
 }
+
+/* drag&drop classes */
+.react-draggable-dragging {
+  @apply shadow-2xl
+}
+
+.react-grid-placeholder {
+  @apply bg-transparent rounded-md border-gray-500 border-2 border-dashed !important;
+}
+
+.react-resizable-handle-icon {
+  @apply absolute bottom-0 right-0
+}
+
+.react-grid-item:hover .react-resizable-handle-icon > svg {
+  @apply block
+}
+
+.react-resizable-handle-icon > svg {
+  @apply h-4 w-4 text-slate-400 hover:cursor-nwse-resize rotate-45 hidden
+}
+
+
