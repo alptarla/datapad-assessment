@@ -18,7 +18,7 @@
 }
 
 .react-grid-placeholder {
-  @apply bg-transparent rounded-md border-gray-500 border-2 border-dashed !important;
+  @apply bg-transparent rounded-md border-[#B3A6F9] border-2 border-dashed !important;
 }
 
 .react-resizable-handle-icon {

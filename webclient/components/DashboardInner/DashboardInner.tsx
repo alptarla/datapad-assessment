@@ -44,7 +44,7 @@ function DashboardInner({ workspaceid, dashboardid }) {
         <Button
           title="Add New KPI"
           icon={<PlusIcon className="mr-1 h-4 w-4" />}
-          className="text-purple-900 bg-white border rounded-md hover:shadow"
+          className="text-[#5B4CCC] bg-white border rounded-md hover:shadow"
           onClick={handleSideBarShown(true)}
         />
       </div>
