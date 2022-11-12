@@ -13,6 +13,10 @@
   @apply shadow-2xl
 }
 
+.react-draggable-dragging #grab-icon {
+  @apply cursor-grabbing
+}
+
 .react-grid-placeholder {
   @apply bg-transparent rounded-md border-gray-500 border-2 border-dashed !important;
 }

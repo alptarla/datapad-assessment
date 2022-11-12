@@ -70,7 +70,8 @@ function MetricChart(props) {
       </div>
       <div
         role="button"
-        className={`${props.draggableClassName} absolute top-0 left-0 h-4 w-4 text-slate-400 hidden group-hover:block m-3`}
+        id="grab-icon"
+        className={`${props.draggableClassName} cursor-grab absolute top-0 left-0 h-4 w-4 text-slate-400 hidden group-hover:block m-3`}
       >
         <ArrowsExpandIcon />
       </div>
