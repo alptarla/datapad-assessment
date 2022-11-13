@@ -69,7 +69,10 @@ const SideMenu: FC<SideMenuProps> = ({
   return (
     <>
       {isOverlayShown && (
-        <div className="absolute top-0 left-0 z-20 w-screen h-screen bg-gray-500 bg-opacity-75 transition-opacity"></div>
+        <div
+          onClick={onCloseSideMenu}
+          className="absolute top-0 left-0 z-20 w-screen h-screen bg-gray-500 bg-opacity-75 transition-opacity"
+        />
       )}
       <aside
         className={`${
