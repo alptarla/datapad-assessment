@@ -1,31 +1,40 @@
+import { useEffect, useState } from "react";
+
 const LAYOUT_STORAGE_KEY = "grid-layout";
 
 function useKPIGrid(list = [], cols) {
-  const getLayouts = () => {
+  const [layouts, setLayouts] = useState({});
+
+  useEffect(() => {
+    if (list.length <= 0) return;
+
     const savedLayouts = localStorage.getItem(LAYOUT_STORAGE_KEY);
-    if (savedLayouts) return JSON.parse(savedLayouts);
+    if (savedLayouts) {
+      setLayouts(JSON.parse(savedLayouts));
+      return;
+    }
 
-    const layouts = {};
+    setLayouts((prevState) => {
+      Object.entries(cols).forEach(([key, value]) => {
+        prevState[key] = list.map((item, index) => ({
+          i: index.toString(),
+          x: index % (value as number),
+          y: 0,
+          w: 1,
+          h: 1,
+        }));
+      });
 
-    Object.entries(cols).forEach(([field, value]) => {
-      layouts[field] = list.map((item, index) => ({
-        i: index.toString(),
-        x: index % (value as number),
-        y: 0,
-        w: 1,
-        h: 1,
-      }));
+      return { ...prevState };
     });
+  }, [list, cols]);
 
-    return layouts;
-  };
-
-  const handleLayoutChange = (layout, layouts) => {
+  const handleLayoutChange = (_, layouts) => {
     localStorage.setItem(LAYOUT_STORAGE_KEY, JSON.stringify(layouts));
   };
 
   return {
-    layouts: getLayouts(),
+    layouts,
     onLayoutChange: handleLayoutChange,
   };
 }

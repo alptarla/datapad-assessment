@@ -49,7 +49,7 @@ function DashboardInner({ workspaceid, dashboardid }) {
         />
       </div>
 
-      <KpiGridLayout list={data} />
+      <KpiGridLayout list={data} onItemAdd={handleAddKpiToDashboard} />
 
       <SideMenu
         isOpen={isSideMenuOpen}

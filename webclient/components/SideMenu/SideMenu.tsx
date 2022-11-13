@@ -1,4 +1,4 @@
-import { FC, useEffect } from "react";
+import { FC, useEffect, useState } from "react";
 import { XIcon } from "@heroicons/react/outline";
 import { ArrowLeftIcon } from "@heroicons/react/outline";
 import useMetricsAllFetch from "@core/hooks/data/use-metrics-all-fetch";
@@ -17,10 +17,16 @@ const SideMenu: FC<SideMenuProps> = ({
   workspaceid,
   onKpiAdd,
 }) => {
+  const [isOverlayShown, setIsOverlayShown] = useState(isOpen);
+
   const { isError, error, data, isSuccess, doFetch } = useMetricsAllFetch(
     workspaceid,
     false
   );
+
+  useEffect(() => {
+    setIsOverlayShown(isOpen);
+  }, [isOpen]);
 
   useEffect(() => {
     if (isOpen) {
@@ -52,7 +58,7 @@ const SideMenu: FC<SideMenuProps> = ({
 
   return (
     <>
-      {isOpen && (
+      {isOverlayShown && (
         <div className="absolute top-0 left-0 z-20 w-screen h-screen bg-gray-500 bg-opacity-75 transition-opacity"></div>
       )}
       <aside
@@ -85,6 +91,20 @@ const SideMenu: FC<SideMenuProps> = ({
                     role="button"
                     key={metricId}
                     onClick={handleAddKpi(data[metricId])}
+                    className="droppable-element"
+                    draggable={true}
+                    unselectable="on"
+                    // this is a hack for firefox
+                    // Firefox requires some kind of initialization
+                    // which we can do by adding this attribute
+                    // @see https://bugzilla.mozilla.org/show_bug.cgi?id=568313
+                    onDragStart={(e) => {
+                      setIsOverlayShown(false);
+                      return e.dataTransfer.setData(
+                        "text/plain",
+                        JSON.stringify(data[metricId])
+                      );
+                    }}
                   >
                     <MetricChart metric={metric} />
                   </div>
