@@ -5,9 +5,10 @@ function useKPIGrid(list = [], cols) {
   const [layouts, setLayouts] = useState({});
 
   useEffect(() => {
-    if (list.length <= 0) return;
+    if (Object.keys(layouts).length > 0) return;
 
     setLayouts((prevState) => {
+      if (list.length <= 0) return prevState;
       Object.entries(cols).forEach(([key, value]) => {
         prevState[key] = list.map((item, index) => ({
           i: index.toString(),

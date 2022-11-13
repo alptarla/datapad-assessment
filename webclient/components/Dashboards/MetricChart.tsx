@@ -7,6 +7,8 @@ import { MetricLineChart } from "./MetricLineChart";
 import { MetricBarChart } from "./MetricBarChart";
 import { MetricTableChart } from "./MetricTableChart";
 import { MetricSingleValueChart } from "./MetricSingleValueChart";
+import { useState } from "react";
+import { XIcon } from "@heroicons/react/outline";
 
 function GetParametersByChartType(chartType) {
   if (chartType === "BAR_CHART") {
@@ -53,8 +55,19 @@ function GetParametersByChartType(chartType) {
 }
 
 function MetricChart(props) {
-  const { metric } = props;
+  const [isShowRemoveButton, setIsShowRemoveButton] = useState(false);
+
+  const { metric, onRemove, metricId, isShownIcons = true } = props;
   const params = GetParametersByChartType(metric.chart_type);
+
+  const toggleRemoveButtonVisibility = () => {
+    setIsShowRemoveButton((prevState) => !prevState);
+  };
+
+  const handleRemove = () => {
+    onRemove(metricId);
+    setIsShowRemoveButton(false);
+  };
 
   return (
     <div
@@ -62,19 +75,39 @@ function MetricChart(props) {
         "flex flex-col h-full shadow-sm dark:bg-slate-800 bg-white rounded-lg px-4 py-7 group relative"
       }
     >
-      <div
-        role="button"
-        className={`${props.draggableClassName} absolute top-0 right-0 h-4 w-4 text-slate-400 hidden group-hover:block m-3`}
-      >
-        <DotsHorizontalIcon />
-      </div>
-      <div
-        role="button"
-        id="grab-icon"
-        className={`${props.draggableClassName} cursor-grab absolute top-0 left-0 h-4 w-4 text-slate-400 hidden group-hover:block m-3`}
-      >
-        <ArrowsExpandIcon />
-      </div>
+      {isShownIcons && (
+        <div
+          role="button"
+          onClick={toggleRemoveButtonVisibility}
+          className={
+            "absolute top-0 right-0 h-4 w-4 text-slate-400 hidden group-hover:block m-3"
+          }
+        >
+          <DotsHorizontalIcon />
+        </div>
+      )}
+
+      {isShowRemoveButton && (
+        <div
+          role="button"
+          onClick={handleRemove}
+          className="absolute top-0 right-0 -mr-10 mt-10 bg-white shadow-md rounded-md p-3 flex items-center justify-center gap-2"
+        >
+          <XIcon className="h-4 w-4 text-red-600" />
+          <span>Remove</span>
+        </div>
+      )}
+
+      {isShownIcons && (
+        <div
+          role="button"
+          id="grab-icon"
+          className={`${props.draggableClassName} cursor-grab absolute top-0 left-0 h-4 w-4 text-slate-400 hidden group-hover:block m-3`}
+        >
+          <ArrowsExpandIcon />
+        </div>
+      )}
+
       <div>
         <Conditional if={params.showGoal}>
           <h3 className="text-lg">{props.metric.goal}</h3>

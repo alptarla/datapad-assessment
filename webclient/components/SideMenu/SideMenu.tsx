@@ -106,7 +106,7 @@ const SideMenu: FC<SideMenuProps> = ({
                     unselectable="on"
                     onDragStart={handleDragStart(metricId)}
                   >
-                    <MetricChart metric={metric} />
+                    <MetricChart metric={metric} isShownIcons={false} />
                   </div>
                 );
               })}

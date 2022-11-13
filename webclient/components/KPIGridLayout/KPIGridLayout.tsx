@@ -7,9 +7,9 @@ import useKPIGrid from "@webclient/hooks/useKPIGrid";
 const ResponsiveGridLayout = WidthProvider(Responsive);
 
 const BREAKPOINTS = { lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 };
-const COLS = { lg: 5, md: 4, sm: 3, xs: 2, xxs: 1 };
+const COLS = { lg: 4, md: 3, sm: 2, xs: 1, xxs: 1 };
 
-const KpiGridLayout = ({ list, onItemAdd }) => {
+const KpiGridLayout = ({ list, onItemAdd, onItemRemove }) => {
   const { layouts, onBreakpointChange, onDrop } = useKPIGrid(list, COLS);
 
   const handleDrop = (layouts, layout, event) => {
@@ -34,6 +34,7 @@ const KpiGridLayout = ({ list, onItemAdd }) => {
       droppingItem={{ i: list.length.toString(), w: 1, h: 1 }}
       cols={COLS}
       rowHeight={300}
+      margin={[50, 50]}
       draggableHandle=".drag-handle"
       resizeHandle={
         <div className="react-resizable-handle-icon">
@@ -43,8 +44,13 @@ const KpiGridLayout = ({ list, onItemAdd }) => {
     >
       {Object.entries(list).map(([metricId, metric], index) => {
         return (
-          <div key={index} className="overflow-hidden">
-            <MetricChart draggableClassName="drag-handle" metric={metric} />
+          <div key={index}>
+            <MetricChart
+              draggableClassName="drag-handle"
+              metric={metric}
+              metricId={metricId}
+              onRemove={onItemRemove}
+            />
           </div>
         );
       })}

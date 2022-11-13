@@ -25,6 +25,12 @@ function DashboardInner({ workspaceid, dashboardid }) {
     setIsSideMenuOpen(false);
   };
 
+  const handleRemove = (metricId) => {
+    setData((prevState) => {
+      return prevState.filter((_, index) => +metricId !== +index);
+    });
+  };
+
   if (isError) {
     return <>error: {JSON.stringify(error)}</>;
   }
@@ -49,7 +55,11 @@ function DashboardInner({ workspaceid, dashboardid }) {
         />
       </div>
 
-      <KpiGridLayout list={data} onItemAdd={handleAddKpiToDashboard} />
+      <KpiGridLayout
+        list={data}
+        onItemAdd={handleAddKpiToDashboard}
+        onItemRemove={handleRemove}
+      />
 
       <SideMenu
         isOpen={isSideMenuOpen}
