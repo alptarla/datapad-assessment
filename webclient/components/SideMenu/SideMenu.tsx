@@ -56,6 +56,16 @@ const SideMenu: FC<SideMenuProps> = ({
     };
   };
 
+  const handleDragStart = (metricId) => {
+    return (e) => {
+      setIsOverlayShown(false);
+      return e.dataTransfer.setData(
+        "text/plain",
+        JSON.stringify(data[metricId])
+      );
+    };
+  };
+
   return (
     <>
       {isOverlayShown && (
@@ -94,17 +104,7 @@ const SideMenu: FC<SideMenuProps> = ({
                     className="droppable-element"
                     draggable={true}
                     unselectable="on"
-                    // this is a hack for firefox
-                    // Firefox requires some kind of initialization
-                    // which we can do by adding this attribute
-                    // @see https://bugzilla.mozilla.org/show_bug.cgi?id=568313
-                    onDragStart={(e) => {
-                      setIsOverlayShown(false);
-                      return e.dataTransfer.setData(
-                        "text/plain",
-                        JSON.stringify(data[metricId])
-                      );
-                    }}
+                    onDragStart={handleDragStart(metricId)}
                   >
                     <MetricChart metric={metric} />
                   </div>

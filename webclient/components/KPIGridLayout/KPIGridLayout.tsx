@@ -10,13 +10,14 @@ const BREAKPOINTS = { lg: 1200, md: 996, sm: 768, xs: 480, xxs: 0 };
 const COLS = { lg: 5, md: 4, sm: 3, xs: 2, xxs: 1 };
 
 const KpiGridLayout = ({ list, onItemAdd }) => {
-  const { layouts, onLayoutChange } = useKPIGrid(list, COLS);
+  const { layouts, onBreakpointChange, onDrop } = useKPIGrid(list, COLS);
 
   const handleDrop = (layouts, layout, event) => {
     const data = event.dataTransfer.getData("text");
-    if (data) {
-      onItemAdd(JSON.parse(data));
-    }
+    if (!data) return;
+    onItemAdd(JSON.parse(data));
+
+    onDrop(layouts);
   };
 
   if (list.length <= 0 || Object.keys(layouts).length <= 0) {
@@ -27,9 +28,10 @@ const KpiGridLayout = ({ list, onItemAdd }) => {
     <ResponsiveGridLayout
       layouts={layouts}
       breakpoints={BREAKPOINTS}
-      onLayoutChange={onLayoutChange}
+      onBreakpointChange={onBreakpointChange}
       onDrop={handleDrop}
       isDroppable
+      droppingItem={{ i: list.length.toString(), w: 1, h: 1 }}
       cols={COLS}
       rowHeight={300}
       draggableHandle=".drag-handle"

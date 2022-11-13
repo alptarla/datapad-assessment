@@ -1,18 +1,11 @@
 import { useEffect, useState } from "react";
 
-const LAYOUT_STORAGE_KEY = "grid-layout";
-
 function useKPIGrid(list = [], cols) {
+  const [currentBreakpoint, setCurrentBreakPoint] = useState("lg");
   const [layouts, setLayouts] = useState({});
 
   useEffect(() => {
     if (list.length <= 0) return;
-
-    const savedLayouts = localStorage.getItem(LAYOUT_STORAGE_KEY);
-    if (savedLayouts) {
-      setLayouts(JSON.parse(savedLayouts));
-      return;
-    }
 
     setLayouts((prevState) => {
       Object.entries(cols).forEach(([key, value]) => {
@@ -29,13 +22,20 @@ function useKPIGrid(list = [], cols) {
     });
   }, [list, cols]);
 
-  const handleLayoutChange = (_, layouts) => {
-    localStorage.setItem(LAYOUT_STORAGE_KEY, JSON.stringify(layouts));
+  const handleDrop = (newLayouts) => {
+    setLayouts((prevState) => {
+      return { ...prevState, ...{ [currentBreakpoint]: newLayouts } };
+    });
+  };
+
+  const handleBreakpointChange = (breakpoint) => {
+    setCurrentBreakPoint(breakpoint);
   };
 
   return {
     layouts,
-    onLayoutChange: handleLayoutChange,
+    onDrop: handleDrop,
+    onBreakpointChange: handleBreakpointChange,
   };
 }
 
